@@ -2,9 +2,22 @@
 
 calculate texture mipmap level in fragment shader.
 
+shader code
 ```c++
-float2 dx = ddx(i.uv) * _MainTex_TexelSize.zw;
-float2 dy = ddy(i.uv) * _MainTex_TexelSize.zw;
-float p = max(dot(dx, dx), dot(dy, dy));
-int mip = clamp(int(_LodScale * log2(p) + _LodBias), 0, 11);
+float4 _MipMapColors[11];
+float4 _MainTex_TexelSize;
+
+fixed4 frag (v2f_img i) : SV_Target
+{
+    float uv = i.uv * _MainTex_TexelSize.zw;
+    float dx = ddx(uv);
+    float dy = ddy(uv);
+    float rho = max(dot(dx, dx), dot(dy, dy));
+    float lambda = 0.5 * log2(rho);
+    int d = max(int(lambda + 0.5), 0);
+    return _MipMapColors[d];
+}
 ```
+
+hardware mipmap level(left) vs shader mipmap level(right)
+![mipmap level](/Image/hardware-vs-shader.png)
