@@ -5,7 +5,8 @@ using UnityEngine;
 public class Main : MonoBehaviour
 {
     public GameObject texturePlane;
-    public GameObject shaderPlane;
+	public GameObject shaderPlane;
+	public GameObject shaderPlaneLarge;
 
     private int textureSize = 1024;
 
@@ -51,12 +52,12 @@ public class Main : MonoBehaviour
         renderer.material = material;
     }
 
-    private void SetupShaderPlane()
+	private void SetupShaderPlane(GameObject plane)
     {
-        if (shaderPlane == null)
+		if (plane == null)
             return;
 
-        var renderer = shaderPlane.GetComponent<MeshRenderer>();
+		var renderer = plane.GetComponent<MeshRenderer>();
         if (renderer == null)
             return;
 
@@ -71,7 +72,8 @@ public class Main : MonoBehaviour
         textureStyle = new GUIStyle { normal = new GUIStyleState { background = Texture2D.whiteTexture } };
 
         SetupTexturePlane();
-        SetupShaderPlane();
+		SetupShaderPlane(shaderPlane);
+		SetupShaderPlane(shaderPlaneLarge);
     }
 
     void OnGUI()

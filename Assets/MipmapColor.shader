@@ -3,8 +3,6 @@
     Properties
     {
 		_MainTex("Texture", 2D) = "white" {}
-		_LodScale("Lod Scale", Float) = 0.5
-		_LodBias("Lod Bias", Float) = 0.5
     }
 
     SubShader
@@ -19,20 +17,23 @@
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-			float4 _MainTex_TexelSize;
-			float _LodScale;
-			float _LodBias;
 			float4 _MipMapColors[11];
+			float4 _MainTex_TexelSize;
 
             fixed4 frag (v2f_img i) : SV_Target
             {
-				float2 dx = ddx(i.uv) * _MainTex_TexelSize.zw;
-				float2 dy = ddy(i.uv) * _MainTex_TexelSize.zw;
-				float p = max(dot(dx, dx), dot(dy, dy));
-				int mip = clamp(int(_LodScale * log2(p) + _LodBias), 0, 11);
-
-                fixed4 col = _MipMapColors[mip];
-                return col;
+            	float uv = i.uv * _MainTex_TexelSize.zw;
+            	float dx = ddx(uv);
+            	float dy = ddy(uv);
+#if 0
+            	float rho = max(sqrt(dot(dx, dx)), sqrt(dot(dy, dy)));
+            	float lambda = log2(rho);
+#else
+				float rho = max(dot(dx, dx), dot(dy, dy));
+				float lambda = 0.5 * log2(rho);
+#endif
+            	int d = max(int(lambda + 0.5), 0);
+                return _MipMapColors[d];
             }
             ENDCG
         }
