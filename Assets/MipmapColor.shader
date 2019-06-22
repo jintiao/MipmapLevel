@@ -22,9 +22,9 @@
 
             fixed4 frag (v2f_img i) : SV_Target
             {
-            	float uv = i.uv * _MainTex_TexelSize.zw;
-            	float dx = ddx(uv);
-            	float dy = ddy(uv);
+            	float2 uv = i.uv * _MainTex_TexelSize.zw;
+            	float2 dx = ddx(uv);
+            	float2 dy = ddy(uv);
 #if 0
             	float rho = max(sqrt(dot(dx, dx)), sqrt(dot(dy, dy)));
             	float lambda = log2(rho);
